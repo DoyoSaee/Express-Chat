@@ -1,11 +1,12 @@
 # ExpressChat
 
 **Express + Socket.IO + MongoDB** 기반의 실시간 채팅 애플리케이션입니다.  
-1:1 Private Chat(DM) 기능과 채팅방 기능을 지원합니다.  
+1:1 Private Chat(DM) 기능과 채팅방 기능을 지원합니다.
 
 ---
 
 ## 주요 기능
+
 - 실시간 채팅 (Socket.IO)
 - 채팅방 생성 및 입장
 - 입장/퇴장 알림
@@ -16,9 +17,10 @@
 ---
 
 ## 기술 스택
-- **Backend**: Node.js, Express, Socket.IO  
-- **Database**: MongoDB  
-- **Template Engine**: Mustache  
+
+- **Backend**: Node.js, Express, Socket.IO
+- **Database**: MongoDB
+- **Template Engine**: Mustache
 - **Frontend**: Next.js
 
 ---
@@ -35,10 +37,10 @@
   package.json
 ```
 
-
 ## 향후 계획
 
-* 채팅 기록 검색 기능 추가
-* 알림(Notification) 시스템 연동
-* 소셜 로그인(OAuth) 연동
-* 그룹 채팅 확장
+- 채팅 기록 검색 기능 추가
+- 알림(Notification) 시스템 연동
+- 소셜 로그인(OAuth) 연동
+- 그룹 채팅 확장
+- 패스트캠퍼스 에러...
