@@ -6,6 +6,6 @@ wss.on("connection", (ws) => {
 
   ws.on("message", (messageFromClient) => {
     const message = JSON.parse(messageFromClient);
-    console.log("message", message);
+    console.log("message ", message);
   });
 });
