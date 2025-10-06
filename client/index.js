@@ -7,7 +7,7 @@ ws.onmessage = (webSocketMessage) => {
 
 document.body.onmousemove = (evt) => {
   const messageBody = {
-    x: evt.clientX,
+    x: evt.clientX, 
     y: evt.clientY,
   };
   ws.send(JSON.stringify(messageBody));
