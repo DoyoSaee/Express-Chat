@@ -1,8 +1,8 @@
 # Express Chat Monorepo
 
-**Turborepo**를 사용하여 프론트엔드와 서버 조합을 손쉽게 확장하고 관리할 수 있도록 설계된 실시간 채팅 애플리케이션입니다. 이 모노레포 구조를 통해 여러 버전의 클라이언트와 서버를 독립적으로 개발하고 실행할 수 있습니다.
+**turboRepo**를 사용하여 프론트엔드와 서버 조합을 손쉽게 확장하고 관리할 수 있도록 설계된 실시간 채팅 애플리케이션입니다. 이 모노레포 구조를 통해 여러 버전의 클라이언트와 서버를 독립적으로 개발하고 실행할 수 있습니다.
 
-## 🌟 주요 기능
+## 🌟 주요 기능 (채팅)
 
 - **채팅방 생성 및 참여**: 사용자는 원하는 이름의 채팅방에 입장할 수 있습니다.
 - **실시간 메시지 전송**: 같은 채팅방에 있는 사용자들과 실시간으로 메시지를 주고받을 수 있습니다.
@@ -10,16 +10,14 @@
 
 ## 📂 프로젝트 구조
 
-이 프로젝트는 `pnpm` 워크스페이스와 Turborepo를 기반으로 한 모노레포입니다. 모든 애플리케이션은 `apps` 디렉터리 내에 위치합니다.
+이 프로젝트는 `pnpm` 워크스페이스와 turboRepo 기반으로 한 모노레포입니다. 모든 애플리케이션은 `apps` 디렉터리 내에 위치합니다.
 
 ```text
 .
-├── apps
-│   ├── client1   # Vite 기반 클라이언트
-│   ├── client2   # Vite 기반 클라이언트
-│   ├── express   # 순수 Express 서버
-│   ├── server1   # Node.js + Socket.IO 서버
-│   └── server2   # Node.js + Express + Socket.IO 서버
+├── apps/
+│   ├── client1/  # Vite 기반 클라이언트
+│   ├── express/  # Express + Socket.IO 서버
+│   └── server1/  # 순수 Node.js + Socket.IO 서버
 ├── package.json
 ├── pnpm-workspace.yaml
 └── turbo.json
@@ -29,7 +27,7 @@
 
 ### Monorepo
 
-- **Turborepo**: 모노레포를 위한 고성능 빌드 시스템
+- **turboRepo**: 모노레포를 위한 고성능 빌드 시스템
 - **pnpm**: 빠르고 효율적인 패키지 매니저
 
 ### `apps/client*`
@@ -69,30 +67,18 @@ npm install -g pnpm
 
 ## 🚀 시작하기
 
-### 1. 프로젝트 클론
+### 1. 의존성 설치
 
 ```bash
-pnpm dev:client1   # client1 개발 서버 (Vite, 기본 포트 5173)
-pnpm dev:server1   # server1 Socket.IO 서버 (기본 포트 8080)
-pnpm dev:express   # express 개발 서버 (기본 포트 3100)
-git clone <repository-url>
-cd Express-Chat
-```
-
-여러 앱을 동시에 띄우고 싶다면 별도의 터미널에서 각각 실행하면 됩니다. 공통 작업(`dev`, `build`, `lint`)은 여전히 Turborepo 파이프라인을 사용합니다.
-
-### 2. 의존성 설치
-
-```bash
-npm install
+pnpm install
 ```
 
 ### server1/client1 테스트 화면
 
-### 3. 서버 실행
+### 2. 서버 실행
 
 ```bash
-npm start
+pnpm start
 ```
 
 ![server1-client1 테스트](apps/client1/public/img/clent1-server1.png)
