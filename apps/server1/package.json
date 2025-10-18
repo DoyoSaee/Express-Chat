@@ -1,0 +1,16 @@
+{
+  "name": "@express-chat/server1",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Socket.IO 기반 채팅 서버",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js",
+    "start": "NODE_ENV=production node index.js",
+    "build": "echo \"server1 has no build step\"",
+    "lint": "echo \"No lint configured for server1\""
+  },
+  "dependencies": {
+    "socket.io": "^4.8.1"
+  }
+}

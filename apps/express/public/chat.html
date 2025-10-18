@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Express Chat</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body class="chat">
+    <div id="sidebar" class="chat_sidebar"></div>
+    <div class="chat_main">
+      <div id="messages" class="chat_messages"></div>
+      <form id="form_container">
+        <input
+          type="text"
+          id="message"
+          placeholder="메시지 입력하세요"
+          required
+        />
+        <button id="send" type="submit">전송</button>
+      </form>
+    </div>
+    <script type="module" src="./js/chat.js"></script>
+  </body>
+</html>

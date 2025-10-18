@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Express Chat – Client1</title>
   </head>
   <body
     style="
@@ -14,8 +14,12 @@
     "
   >
     <div>
-      <p>hi</p>
+      <ul></ul>
+      <form id="chat-form" style="display: flex; gap: 8px; margin-top: 12px">
+        <input type="text" id="message" placeholder="Message" />
+        <button id="send" type="submit">Send</button>
+      </form>
     </div>
-    <script src="index.js"></script>
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>

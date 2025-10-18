@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Express Chat</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <div class="centered-form">
+      <div class="centered-form_box">
+        <h2>채팅방 입장</h2>
+        <form action="/chat.html">
+          <label> 유저이름</label>
+          <input type="text" name="username" placeholder="유저이름" />
+
+          <label> 방 이름</label>
+          <input type="text" name="room" placeholder="방 이름" />
+
+          <button type="submit">입장</button>
+        </form>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
