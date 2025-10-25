@@ -1,5 +1,5 @@
 {
-  "name": "@express-chat/server2",
+  "name": "@express-chat/express",
   "version": "1.0.0",
   "private": true,
   "description": "Socket.IO 기반 채팅 서버 (두 번째 인스턴스)",
@@ -7,8 +7,8 @@
   "scripts": {
     "dev": "node index.js",
     "start": "NODE_ENV=production node index.js",
-    "build": "echo \"server2 has no build step\"",
-    "lint": "echo \"No lint configured for server2\""
+    "build": "echo \"express has no build step\"",
+    "lint": "echo \"No lint configured for express\""
   },
   "dependencies": {
     "express": "^5.1.0",

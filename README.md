@@ -1,106 +1,89 @@
 # Express Chat Monorepo
 
-**turboRepo**를 사용하여 프론트엔드와 서버 조합을 손쉽게 확장하고 관리할 수 있도록 설계된 실시간 채팅 애플리케이션입니다. 이 모노레포 구조를 통해 여러 버전의 클라이언트와 서버를 독립적으로 개발하고 실행할 수 있습니다.
-
-## 🌟 주요 기능 (채팅)
-
-- **채팅방 생성 및 참여**: 사용자는 원하는 이름의 채팅방에 입장할 수 있습니다.
-- **실시간 메시지 전송**: 같은 채팅방에 있는 사용자들과 실시간으로 메시지를 주고받을 수 있습니다.
-- **사용자 목록**: 현재 채팅방에 참여 중인 사용자 목록을 확인할 수 있습니다.
+**turboRepo + pnpm** 기반으로 구성된 실시간 채팅 모노레포입니다. `apps/` 하위에 여러 서버·클라이언트가 공존하고, 공통 의존성을 공유하면서 빠르게 새로운 조합을 추가할 수 있습니다. 최근에는 **Express + Socket.IO** 조합(`apps/express`)을 집중적으로 개선했고, 관련 실행 플로우와 화면을 본 문서에서 정리합니다.
 
 ## 📂 프로젝트 구조
-
-이 프로젝트는 `pnpm` 워크스페이스와 turboRepo 기반으로 한 모노레포입니다. 모든 애플리케이션은 `apps` 디렉터리 내에 위치합니다.
 
 ```text
 .
 ├── apps/
-│   ├── client1/  # Vite 기반 클라이언트
-│   ├── express/  # Express + Socket.IO 서버
-│   └── server1/  # 순수 Node.js + Socket.IO 서버
-├── package.json
+│   ├── client1/        # Vite + Socket.IO Client
+│   ├── express/        # Express + Socket.IO 서버 (현재 메인)
+│   └── server1/        # Node.js + Socket.IO 서버 예제
+├── public/img/         # 공용 스크린샷 모음
+├── package.json        # 루트 스크립트 (예: pnpm dev:express)
+├── pnpm-lock.yaml
 ├── pnpm-workspace.yaml
 └── turbo.json
 ```
 
-## 🛠️ 기술 스택
+## 🛠 기술 스택 & 모듈
 
-### Monorepo
+- **Monorepo 도구**: pnpm workspaces, TurboRepo
+- **서버 (apps/express)**: Express 5, Socket.IO 4, Node.js
+- **클라이언트 (정적 템플릿)**: HTML/CSS/Vanilla JS + Mustache 템플릿
+- **유틸**:
+  - `apps/express/src/utils/users.js` : 사용자 입·퇴장 및 중복 처리
+  - `apps/express/src/utils/messages.js` : 서버 공용 메시지 포맷
 
-- **turboRepo**: 모노레포를 위한 고성능 빌드 시스템
-- **pnpm**: 빠르고 효율적인 패키지 매니저
+## 🚀 실행 방법
 
-### `apps/client*`
+1. **의존성 설치**
 
-- **Vite**: 프론트엔드 개발 서버 및 번들러
-- **Socket.IO Client**: 실시간 통신을 위한 클라이언트 라이브러리
-- **HTML5 / CSS3 / JavaScript**
+   ```bash
+   pnpm install
+   ```
 
-### `apps/server*`
+2. **Express 서버 실행**
 
-- **Node.js**: 서버사이드 JavaScript 런타임
-- **Socket.IO**: 실시간 양방향 통신 라이브러리
-- **Express**: 웹 프레임워크 (`server2`, `express` 패키지에서 사용)
-- **Nodemon**: 개발 환경 자동 재시작 도구 (`server2` 패키지에서 사용)
+   ```bash
+   pnpm dev:express
+   ```
 
-## 🚀 시작하기
+   - 루트 `package.json`의 `dev:express` 스크립트가 `pnpm --filter @express-chat/express dev`를 호출합니다.
+   - 워크스페이스 내부(`apps/express/package.json`)의 `dev` 스크립트는 `node index.js`를 실행하며, `index.js`는 `src/index.js`를 불러와 서버와 Socket.IO를 같은 HTTP 서버에서 구동합니다.
 
-### 사전 준비
+3. **접속**
 
-이 프로젝트는 `pnpm`을 패키지 매니저로 사용합니다. `pnpm`이 설치되어 있지 않다면 먼저 설치해주세요.
+   - 브라우저에서 `http://localhost:8081` 진입 → 닉네임·방 이름 입력 → `입장`.
+   - 동일 방에 다른 브라우저/탭으로 재접속하면 실시간으로 사용자 목록과 메시지가 동기화됩니다.
 
-```bash
-npm install -g pnpm
+## ✨ 주요 기능
+
+- **입장/퇴장 브로드캐스트**: `generateMessage` 헬퍼를 통해 Admin 메시지 출력.
+- **유저명 중복 검사**: `addUser`가 같은 방 내 중복 닉네임을 거부하고 오류 콜백 반환.
+- **실시간 메시지**: `sendMessage` ACK를 활용해 클라이언트 폼 상태를 안정적으로 초기화.
+- **사이드바 인원수 갱신**: `roomData` 이벤트로 Mustache 템플릿을 업데이트.
+
+## 🖼 화면 흐름
+
+공통 이미지 경로는 `public/img/*.png`입니다.
+
+| 파일 | 설명 |
+| --- | --- |
+| `public/img/express1-join.png` | 최초 입장(방 생성) 화면 |
+| `public/img/express1-chat1.png` | 첫 번째 입장자의 채팅 화면 |
+| `public/img/express1-idDuplication.png` | 동일 방에서 닉네임이 중복될 때 에러 알림 |
+| `public/img/express1-chat2.png` | 두 번째 입장자의 채팅 화면 (실시간 사용자 목록 반영) |
+| `public/img/express1-leave.png` | 사용자가 퇴장했을 때 남은 사용자에게 표시되는 화면 |
+
+필요 시 README 내에서 바로 이미지를 확인하려면 아래와 같이 참조할 수 있습니다.
+
+```markdown
+![Express Join](public/img/express1-join.png)
 ```
 
-### 백엔드
+## 🔌 기타 스크립트
 
-- **Node.js**: 서버 사이드 JavaScript 런타임
-- **Express**: 웹 애플리케이션 프레임워크
-- **Socket.IO**: 실시간 양방향 통신 라이브러리
+- `pnpm dev` : TurboRepo를 통해 등록된 모든 앱의 `dev` 파이프라인 실행
+- `pnpm build` / `pnpm lint` : 각 워크스페이스의 `build`/`lint`를 Turbo 파이프라인으로 호출
+- `pnpm dev:client1`, `pnpm dev:server1` : 특정 워크스페이스만 필터링해서 실행
 
-### 프론트엔드
+## 📝 확장 가이드
 
-- **HTML5**
-- **CSS3**
-- **JavaScript (ES6 Modules)**
+1. `apps/` 아래 새 디렉터리 생성 (`client2`, `server2` 등).
+2. 필요한 `package.json`, 소스, 정적 자산을 복사/수정.
+3. 루트 `package.json` `scripts`에 `dev:<name>` 등 새 명령 추가.
+4. 공용 모듈(유저/메시지 로직 등)이 많아지면 `packages/` 하위에 공유 패키지를 만들고 워크스페이스에 포함시킵니다.
 
-## 🚀 시작하기
-
-### 1. 의존성 설치
-
-```bash
-pnpm install
-```
-
-### server1/client1 테스트 화면
-
-### 2. 서버 실행
-
-```bash
-pnpm start
-```
-
-![server1-client1 테스트](apps/client1/public/img/clent1-server1.png)
-서버가 시작되면 브라우저에서 `http://localhost:3000` (또는 설정된 포트)으로 접속하여 채팅을 시작할 수 있습니다.
-
-`client1`과 `server1`을 동시에 실행해 두 개의 브라우저 인스턴스로 메시지를 주고받은 결과입니다. 동일한 방식으로 다른 조합도 빠르게 확인할 수 있습니다.
-
-## 📝 사용 방법
-
-## 환경 변수
-
-- 클라이언트: `apps/client*/.env.example` 참고 (`VITE_SERVER_URL` 기본값 포함)
-- 서버: `PORT`, `HOST` 환경 변수를 통해 포트/호스트를 조정할 수 있습니다.
-
-## 확장 가이드
-
-1. `apps/` 아래에 `client3`, `server3`처럼 새로운 디렉터리를 추가합니다.
-2. `package.json`과 필요한 설정 파일을 기존 예제를 복사해 수정합니다.
-3. 루트 `package.json`에 `dev:client3`, `dev:server3` 스크립트를 추가합니다.
-4. 공통 라이브러리는 `packages/` 디렉터리를 새로 만들어 공유 패키지로 분리할 수 있습니다.
-
-이 구조를 바탕으로 다양한 프론트/백엔드 조합을 실험해 보세요.
-
-1.  메인 페이지에서 **유저이름**과 **방 이름**을 입력하고 '입장' 버튼을 클릭합니다.
-2.  채팅방에 입장하면 다른 사용자들과 메시지를 주고받을 수 있습니다.
+Express 예제처럼 서버/클라이언트가 분리돼 있어도, 공통 스크립트와 에셋을 재사용하면서 다양한 조합을 빠르게 시도할 수 있습니다. 원하는 기능을 `apps/*` 안에 추가하고 루트 스크립트로 연결해 보세요!

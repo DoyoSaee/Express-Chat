@@ -1,33 +1,62 @@
-import { io } from "socket.io-client";
+const socket = io();
+const query = new URLSearchParams(location.search);
+const username = query.get("username");
+const room = query.get("room");
+const sidebarTemplate = document.getElementById("sidebar-template").innerHTML;
+const messageTemplate = document.getElementById("message-template").innerHTML;
+const messages = document.querySelector("#messages");
+const messageForm = document.querySelector("#message-form");
+const messageInput = document.querySelector("input[name=message]");
+const messageButton = document.querySelector("button[name=send-message]");
 
-const messages = document.querySelector("ul");
-const form = document.querySelector("#chat-form");
-const input = document.querySelector("#message");
+function scrollToBottom() {
+  messages.scrollTop = messages.scrollHeight;
+}
 
-const serverUrl = import.meta.env.VITE_SERVER_URL ?? "http://localhost:8081";
-const socket = io(serverUrl);
-
-socket.on("connect", () => {
-  appendMessage(`Connected as ${socket.id.slice(0, 4)}…`);
+// 채팅방에 입장
+socket.emit("join", { username, room }, (error) => {
+  if (error) {
+    alert(error);
+    location.href = "/";
+  }
 });
 
-socket.on("message", appendMessage);
+// 채팅방 정보
+socket.on("roomData", ({ room, users }) => {
+  const html = Mustache.render(sidebarTemplate, { room, users });
+  document.querySelector("#sidebar").innerHTML = html;
+});
 
-form.addEventListener("submit", (event) => {
+// 메시지 전송
+messageForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  sendMessage();
+
+  messageButton.disabled = true;
+  messageInput.disabled = true;
+  const message = event.target.elements.message.value;
+
+  socket.emit("sendMessage", message, (error) => {
+    messageButton.disabled = false;
+    messageInput.disabled = false;
+
+    if (error) {
+      alert(error);
+      return;
+    }
+
+    messageInput.value = "";
+    messageInput.focus();
+    scrollToBottom();
+  });
 });
 
-function sendMessage() {
-  const text = input.value.trim();
-  if (!text) return;
-  socket.emit("message", text);
-  input.value = "";
-  input.focus();
-}
-
-function appendMessage(text) {
-  const element = document.createElement("li");
-  element.innerText = text;
-  messages.appendChild(element);
-}
+// 메시지 수신
+socket.on("message", (message) => {
+  const html = Mustache.render(messageTemplate, {
+    username: message.username,
+    message: message.text,
+    createdAt: moment(message.createdAt).format("MM-DD HH:mm"),
+  });
+  messages.innerHTML += html;
+  scrollToBottom();
+});

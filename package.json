@@ -11,7 +11,7 @@
     "lint": "turbo run lint",
     "dev:client1": "turbo run dev --filter @express-chat/client1",
     "dev:server1": "turbo run dev --filter @express-chat/server1",
-    "dev:express": "turbo run dev --filter @express-chat/express"
+    "dev:express": "pnpm --filter @express-chat/express dev"
   },
   "devDependencies": {
     "@types/node": "^20.16.5",
