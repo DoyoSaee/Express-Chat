@@ -57,21 +57,22 @@
 
 ## 🖼 화면 흐름
 
-공통 이미지 경로는 `public/img/*.png`입니다.
+루트 `public/img` 디렉터리에 저장된 캡처를 그대로 참조해 주요 상태를 설명합니다.
 
-| 파일 | 설명 |
-| --- | --- |
-| `public/img/express1-join.png` | 최초 입장(방 생성) 화면 |
-| `public/img/express1-chat1.png` | 첫 번째 입장자의 채팅 화면 |
-| `public/img/express1-idDuplication.png` | 동일 방에서 닉네임이 중복될 때 에러 알림 |
-| `public/img/express1-chat2.png` | 두 번째 입장자의 채팅 화면 (실시간 사용자 목록 반영) |
-| `public/img/express1-leave.png` | 사용자가 퇴장했을 때 남은 사용자에게 표시되는 화면 |
-
-필요 시 README 내에서 바로 이미지를 확인하려면 아래와 같이 참조할 수 있습니다.
-
-```markdown
+### 1. 최초 방 생성 (`public/img/express1-join.png`)
 ![Express Join](public/img/express1-join.png)
-```
+
+### 2. 첫 번째 입장자 화면 (`public/img/express1-chat1.png`)
+![Express Chat 1](public/img/express1-chat1.png)
+
+### 3. 이름 중복 경고 (`public/img/express1-idDuplication.png`)
+![Express Duplicate](public/img/express1-idDuplication.png)
+
+### 4. 두 번째 입장자 화면 (`public/img/express1-chat2.png`)
+![Express Chat 2](public/img/express1-chat2.png)
+
+### 5. 유저 퇴장 알림 (`public/img/express1-leave.png`)
+![Express Leave](public/img/express1-leave.png)
 
 ## 🔌 기타 스크립트
 
