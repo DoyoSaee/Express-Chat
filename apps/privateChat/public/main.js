@@ -7,7 +7,8 @@ socket.onAny((event, ...args) => {
 
 socket.connect();
 
-//전역변수들
+// 전역변수들 2025-10-27  8개
+// todo:
 const chatBody = document.querySelector(".chat-body");
 const userTitle = document.querySelector(".user-title");
 const loginContainer = document.querySelector(".login-container");

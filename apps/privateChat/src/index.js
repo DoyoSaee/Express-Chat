@@ -1,7 +1,8 @@
-const express = require("express");
 const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
+const express = require("express");
 const mongoose = require("mongoose");
-app = express();
+const app = express();
 
 const http = require("http");
 const server = http.createServer(app);
@@ -14,11 +15,13 @@ app.use(express.static(publicDirectory));
 app.use(express.json());
 
 //몽고DB 연결
+const mongoUri = process.env.MONGODB_URI;
+if (!mongoUri) {
+  throw new Error("필요한 환경 변수(MONGODB_URI)가 설정되지 않았습니다.");
+}
 mongoose.set("strictQuery", true);
 mongoose
-  .connect(
-    "mongodb+srv://ehdgydi_db_user:1F2ktcPjp2tvJG2Y@db.thvwm90.mongodb.net/"
-  )
+  .connect(mongoUri)
   .then(() => {
     console.log("연결성공");
   })
