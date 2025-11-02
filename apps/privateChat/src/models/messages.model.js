@@ -1,11 +1,12 @@
-const { default: mongoose } = require("mongoose");
+const mongoose = require("mongoose");
 
-const messagesSchema = mongoose.Schema({
+const messagesSchema = new mongoose.Schema({
   userToken: {
     type: String,
     required: true,
+    unique: true,
   },
-  message: [
+  messages: [
     {
       from: {
         type: String,
@@ -15,7 +16,7 @@ const messagesSchema = mongoose.Schema({
         type: String,
         required: true,
       },
-      times: {
+      time: {
         type: String,
         required: true,
       },
@@ -23,5 +24,4 @@ const messagesSchema = mongoose.Schema({
   ],
 });
 
-const messageModel = mongoose.model("Message", messageSchema);
-module.exports = messageModel;
+module.exports = mongoose.model("Message", messagesSchema);

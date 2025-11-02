@@ -1,92 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Private Chat</title>
     <link rel="stylesheet" href="./style.css" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-      crossorigin="anonymous"
-    />
   </head>
   <body>
-    <!-- header -->
-    <div class="bg-primary text-white p-3 d-flex">
-      <h3>채팅방</h3>
-    </div>
-    <!-- User Login Form -->
-
-    <div class="login-container p-5">
-      <form
-        method="post"
-        class="d-flex user-login justify-content-center flex-column"
-        action="/login"
-      >
-        <input
-          type="text"
-          class="form-control mb-3"
-          placeholder="유저명을 입력하세요."
-          name="username"
-          id="username"
-          required
-        />
-        <button type="submit" class="btn btn-primary">Login</button>
-      </form>
-
-      <div class="chat-body d-flex">
-        <!-- SideBar        -->
-        <div class="col-4">
-          <div class="sidebar border-end">
-            <div class="title p-2 bg-success bg-opacity-50">
-              나의이름:<span id="user-title"></span>
-            </div>
-            <div class="user-title p-2 border-bottom">
-              <span id="users-tagline">유저이름</span>
-            </div>
-            <div class="users"></div>
-          </div>
+    <main class="app-shell">
+      <header class="hero">
+        <img src="./img/Doyosae.png" alt="도요새 캐릭터" />
+        <div>
+          <h1>도요새 프라이빗 채팅</h1>
+          <p class="muted">
+            친구와 1:1로 담백하게 대화해요. 지금 바로 참여해 보세요!
+          </p>
         </div>
-      </div>
-      <!-- Chat Area -->
-      <div class="col-8">
-        <div class="chat-container">
-          <!-- Active user title -->
-          <div class="title p-2 bg-success bg-opacity-50">
-            상대방 이름: <span id="active-user">&nbsp;</span>
-          </div>
+      </header>
 
-          <!-- message area -->
-          <div class="messages p-2"></div>
-
-          <!-- message form -->
-          <div
-            class="msg-form d-flex justify-content-center border-top p-2 align-items-center bg-success bg-opacity-50"
-          >
-            <form method="post" class="msgForm w-100">
+      <section class="login-container">
+        <div class="login-card">
+          <h2>로그인</h2>
+          <p class="muted">닉네임을 입력하면 채팅방이 열립니다.</p>
+          <form method="post" class="user-login">
+            <div class="input-field">
+              <label for="username">닉네임</label>
               <input
                 type="text"
-                class="form-control"
+                placeholder="닉네임을 입력하세요."
+                name="username"
+                id="username"
+                required
+                autocomplete="off"
+              />
+            </div>
+            <button type="submit" class="btn-primary">채팅방 입장</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="chat-body d-none">
+        <aside class="sidebar">
+          <div class="title">
+            <span>나의 이름: <strong id="user-title">&nbsp;</strong></span>
+            <button type="button" class="logout-btn d-none" id="logout-btn">
+              채팅방 나가기
+            </button>
+          </div>
+          <div class="user-title">
+            <span id="users-tagline" class="test-danger"
+              >접속중인 유저 없음</span
+            >
+          </div>
+          <div class="users">
+            <div class="empty-state">지금 접속 중인 유저가 없어요.</div>
+          </div>
+        </aside>
+
+        <div class="chat-container">
+          <div class="title">
+            상대방 이름: <span id="active-user">&nbsp;</span>
+          </div>
+          <div class="messages"></div>
+          <div class="msg-form d-none">
+            <form method="post" class="msgForm">
+              <input
+                type="text"
                 placeholder="메시지를 입력하세요."
                 name="message"
                 id="message"
                 required
+                autocomplete="off"
               />
-              <button
-                class="btn ms-2 btn-success"
-                style="min-width: 70px"
-                type="submit"
-              >
-                Send
-              </button>
+              <button type="submit">보내기</button>
             </form>
           </div>
         </div>
-      </div>
-    </div>
-    <script src="./../../socket.io/socket.io.js"></script>
+      </section>
+    </main>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="./main.js"></script>
   </body>
 </html>

@@ -55,6 +55,36 @@
 - **실시간 메시지**: `sendMessage` ACK를 활용해 클라이언트 폼 상태를 안정적으로 초기화.
 - **사이드바 인원수 갱신**: `roomData` 이벤트로 Mustache 템플릿을 업데이트.
 
+## 💬 Private Chat 앱 (`apps/privateChat`)
+
+몽고DB와 Socket.IO를 연결해 1:1 비공개 채팅을 제공하는 신규 앱입니다. 닉네임으로 로그인하면 고유 토큰을 발급받고, 해당 토큰을 기준으로 과거 대화가 모두 복구됩니다.
+
+- **세션 유지**: 로컬스토리지에 저장된 닉네임/토큰을 재활용해 새로고침 후에도 자동 로그인.
+- **대화 기록 저장**: `mongoose` 모델을 이용해 사용자 쌍별 대화를 영구 저장하고, 입장 시 바로 불러옵니다.
+- **실시간 알림**: 상대 창을 보고 있지 않을 때는 리스트 아이템에 뱃지를 띄워 신규 메시지를 알려줍니다.
+- **채팅방 나가기**: 사이드바의 `채팅방 나가기` 버튼으로 소켓을 정리하고 세션도 안전하게 초기화합니다.
+
+### 실행
+
+```bash
+pnpm dev:privateChat
+# 혹은
+pnpm --filter @express-chat/private-chat dev
+```
+
+환경 변수 파일(`apps/privateChat/.env`)에 `MONGODB_URI`를 지정해야 하며, 서버와 Socket.IO는 동일 포트(기본 8085)에서 동작합니다.
+
+### 화면 캡처 (`public/img/pc*.png`)
+
+1. **로그인 화면** – `pc2.png`  
+   ![Private Chat Login](public/img/pc2.png)
+2. **로그인 완료 후 채팅방 대기** – `pc3.png`  
+   ![Private Chat Lobby](public/img/pc3.png)
+3. **다른 세션에서 메시지 도착 알림** – `pc4.png`  
+   ![Private Chat Notification](public/img/pc4.png)
+4. **실시간 1:1 대화** – `pc5.png`  
+   ![Private Chat Conversation](public/img/pc5.png)
+
 ## 🖼 화면 흐름
 
 루트 `public/img` 디렉터리에 저장된 캡처를 그대로 참조해 주요 상태를 설명합니다.
