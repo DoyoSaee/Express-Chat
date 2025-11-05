@@ -62,6 +62,7 @@
 - **세션 유지**: 로컬스토리지에 저장된 닉네임/토큰을 재활용해 새로고침 후에도 자동 로그인.
 - **대화 기록 저장**: `mongoose` 모델을 이용해 사용자 쌍별 대화를 영구 저장하고, 입장 시 바로 불러옵니다.
 - **실시간 알림**: 상대 창을 보고 있지 않을 때는 리스트 아이템에 뱃지를 띄워 신규 메시지를 알려줍니다.
+- **오프라인 메시지 지원**: 상대가 오프라인으로 전환돼도 대화 목록에 그대로 남고 메시지를 남길 수 있으며, 재접속 시 자동으로 동기화됩니다.
 - **채팅방 나가기**: 사이드바의 `채팅방 나가기` 버튼으로 소켓을 정리하고 세션도 안전하게 초기화합니다.
 
 ### 실행
@@ -84,6 +85,8 @@ pnpm --filter @express-chat/private-chat dev
    ![Private Chat Notification](public/img/pc4.png)
 4. **실시간 1:1 대화** – `pc5.png`  
    ![Private Chat Conversation](public/img/pc5.png)
+5. **오프라인 상대에게 메시지 남기기** – `pc6.png`  
+   ![Private Chat Offline Messaging](public/img/pc6.png)
 
 ## 🖼 화면 흐름
 

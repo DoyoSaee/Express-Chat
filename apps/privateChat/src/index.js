@@ -6,7 +6,12 @@ const app = express();
 const crypto = require("crypto");
 const http = require("http");
 const server = http.createServer(app);
-const { saveMessage, fetchMessages } = require("./utils/messages");
+const {
+  saveMessage,
+  fetchMessages,
+  getConversations,
+  deleteConversation,
+} = require("./utils/messages");
 
 const { Server } = require("socket.io");
 const io = new Server(server);
@@ -16,6 +21,49 @@ const sharedPublicDirectory = path.resolve(__dirname, "../../../public");
 app.use(express.static(publicDirectory));
 app.use("/assets", express.static(sharedPublicDirectory));
 app.use(express.json());
+
+const emitConversationSnapshot = async (targetUserID) => {
+  if (!targetUserID) {
+    return;
+  }
+  try {
+    const conversations = await getConversations(targetUserID);
+    io.to(targetUserID).emit("conversation-list", { conversations });
+  } catch (error) {
+    console.error("대화 목록 브로드캐스트 실패:", error);
+  }
+};
+
+app.get("/conversations/:userID", async (req, res) => {
+  const { userID } = req.params;
+
+  try {
+    const conversations = await getConversations(userID);
+    res.json({ conversations });
+  } catch (error) {
+    console.error("대화 목록 조회 실패:", error);
+    res.status(500).json({ message: "대화 목록을 불러오지 못했습니다." });
+  }
+});
+
+app.delete("/conversations/:userID/:partnerID", async (req, res) => {
+  const { userID, partnerID } = req.params;
+
+  try {
+    const deleted = await deleteConversation({ userID, partnerID });
+    if (!deleted) {
+      return res.status(404).json({ message: "삭제할 대화가 없습니다." });
+    }
+    emitConversationSnapshot(userID);
+    emitConversationSnapshot(partnerID);
+    io.to(userID).emit("conversation-deleted", { userID: partnerID });
+    io.to(partnerID).emit("conversation-deleted", { userID });
+    res.status(204).end();
+  } catch (error) {
+    console.error("대화 삭제 실패:", error);
+    res.status(500).json({ message: "대화를 삭제하지 못했습니다." });
+  }
+});
 
 //몽고DB 연결
 const mongoUri = process.env.MONGODB_URI;
@@ -74,10 +122,47 @@ io.on("connection", async (socket) => {
   users = users.filter((user) => user.userID !== socket.userID);
   users.push(userData);
   io.emit("users-Data", { users });
-  //클라이언트에서 보내온 메세지_
-  socket.on("message-to-server", (payload) => {
-    io.to(payload.to).emit("message-to-client", payload);
-    saveMessage(payload);
+  await emitConversationSnapshot(socket.userID);
+  //클라이언트에서 보내온 메세지
+  socket.on("message-to-server", async (payload = {}) => {
+    try {
+      const messageText = (payload.message || "").trim();
+      const receiverID = payload.to;
+
+      if (!messageText || !receiverID) {
+        return;
+      }
+
+      const timestamp =
+        payload.time ||
+        new Date().toLocaleString("ko-KR", {
+          hour12: false,
+        });
+
+      const receiver = users.find((user) => user.userID === receiverID);
+
+      const enrichedPayload = {
+        from: socket.userID,
+        fromUsername: socket.username,
+        to: receiverID,
+        toUsername: payload.toUsername || receiver?.username || "",
+        message: messageText,
+        time: timestamp,
+      };
+
+      io.to(receiverID).emit("message-to-client", {
+        from: enrichedPayload.from,
+        fromUsername: enrichedPayload.fromUsername,
+        message: enrichedPayload.message,
+        time: enrichedPayload.time,
+      });
+
+      await saveMessage(enrichedPayload);
+      emitConversationSnapshot(socket.userID);
+      emitConversationSnapshot(receiverID);
+    } catch (error) {
+      console.error("메시지 처리 실패:", error);
+    }
   });
 
   //데이터베이스에서 메세지 가져오기

@@ -6,6 +6,18 @@ const messagesSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  participants: [
+    {
+      userID: {
+        type: String,
+        required: true,
+      },
+      username: {
+        type: String,
+        default: "",
+      },
+    },
+  ],
   messages: [
     {
       from: {
@@ -22,6 +34,6 @@ const messagesSchema = new mongoose.Schema({
       },
     },
   ],
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model("Message", messagesSchema);

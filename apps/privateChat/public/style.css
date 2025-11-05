@@ -145,7 +145,11 @@ input[type="text"]:focus {
   padding: 14px;
   border: none;
   border-radius: calc(var(--radius) - 2px);
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-600) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--primary-600) 100%
+  );
   color: var(--text);
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -233,6 +237,7 @@ input[type="text"]:focus {
   padding: 14px 22px;
   color: var(--text);
   font-weight: 500;
+  vertical-align: middle;
 }
 
 .socket-users:hover {
@@ -244,16 +249,82 @@ input[type="text"]:focus {
   border-left: 3px solid var(--primary);
 }
 
+.user-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.user-primary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.user-name {
+  font-weight: 600;
+}
+
+.user-status {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 122, 182, 0.12);
+}
+
+.status-online {
+  color: var(--primary-400);
+  background: rgba(255, 122, 182, 0.18);
+}
+
+.status-offline {
+  color: rgba(247, 236, 245, 0.6);
+}
+
+.user-meta {
+  font-size: 0.78rem;
+  color: var(--muted);
+  word-break: break-word;
+}
+
+.actions-cell {
+  width: 88px;
+  text-align: right;
+}
+
+.btn-inline {
+  background: transparent;
+  width: 60px;
+  border: 1px solid rgba(255, 122, 182, 0.2);
+  color: var(--muted);
+  font-size: 0.78rem;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.btn-inline:hover {
+  border-color: var(--primary);
+  color: var(--primary-400);
+  background: rgba(255, 122, 182, 0.12);
+}
+
+.btn-remove {
+  color: rgba(255, 122, 182, 0.8);
+}
+
 .notify-badge {
   font-size: 0.75rem;
   background: var(--danger);
   color: var(--text);
   padding: 2px 6px;
   border-radius: 999px;
-  margin-left: 8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  margin-left: auto;
 }
 
 .chat-container {
