@@ -1,4 +1,4 @@
-const socket = io("http://localhost:8085", { autoConnect: false });
+const socket = io({ autoConnect: false });
 socket.onAny((event, ...args) => {
   console.log(event, args);
 });
