@@ -338,7 +338,8 @@ input[type="text"]:focus {
 .messages {
   padding: 24px;
   overflow-y: auto;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
   max-height: 520px;
   scrollbar-width: thin;
@@ -354,35 +355,49 @@ input[type="text"]:focus {
   border-radius: 14px;
 }
 
-.message {
+.message-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.message-row.left {
+  justify-content: flex-start;
+}
+
+.message-row.right {
+  justify-content: flex-end;
+}
+
+.message-bubble {
   max-width: 70%;
   border-radius: calc(var(--radius) - 6px);
   padding: 10px 14px;
   color: var(--text);
-  display: inline-flex;
-  flex-direction: column;
-  gap: 6px;
   background: rgba(255, 255, 255, 0.06);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  word-break: break-word;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
 }
 
-.message.left {
-  justify-self: flex-start;
-}
-
-.message.right {
-  justify-self: flex-end;
+.message-row.right .message-bubble {
   background: linear-gradient(135deg, var(--primary-400), var(--primary-600));
 }
 
-.msg-test {
-  font-size: 0.95rem;
-  line-height: 1.4;
-}
-
-.msg-time {
+.message-time {
   font-size: 0.74rem;
   color: rgba(247, 236, 245, 0.62);
-  align-self: flex-end;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.message-row.left .message-time {
+  margin-left: 6px;
+}
+
+.message-row.right .message-time {
+  margin-right: 6px;
 }
 
 .msg-form {
@@ -453,18 +468,167 @@ input[type="text"]:focus {
 
 @media (max-width: 960px) {
   body {
-    padding: 24px;
+    padding: 24px 18px;
+    display: block;
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+
+  .app-shell {
+    width: 100%;
   }
 
   .chat-body {
     grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 20px;
   }
 
   .sidebar {
-    order: 2;
+    order: 1;
   }
 
   .chat-container {
-    order: 1;
+    order: 2;
+  }
+}
+
+@media (max-width: 720px) {
+  body {
+    padding: 20px 14px;
+  }
+
+  .app-shell {
+    gap: 18px;
+  }
+
+  .hero {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 24px 20px;
+    gap: 16px;
+  }
+
+  .hero img {
+    width: 64px;
+    height: 64px;
+    padding: 10px;
+  }
+
+  .hero h1 {
+    font-size: 1.38rem;
+  }
+
+  .hero p {
+    font-size: 0.82rem;
+  }
+
+  .login-container {
+    padding: 24px 20px;
+  }
+
+  .login-card {
+    gap: 16px;
+  }
+
+  .chat-body {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .sidebar .title,
+  .chat-container .title {
+    padding: 16px 18px;
+    font-size: 0.92rem;
+  }
+
+  .users {
+    max-height: 220px;
+    font-size: 0.88rem;
+  }
+
+  .messages {
+    padding: 18px 16px;
+    max-height: min(55vh, 420px);
+  }
+
+  .msgForm {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .msgForm button {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 16px 12px;
+  }
+
+  .app-shell {
+    gap: 14px;
+  }
+
+  .hero {
+    padding: 20px 16px;
+  }
+
+  .hero img {
+    width: 56px;
+    height: 56px;
+    padding: 8px;
+  }
+
+  .hero h1 {
+    font-size: 1.24rem;
+  }
+
+  .login-container {
+    padding: 20px 16px;
+  }
+
+  .chat-body {
+    padding: 14px;
+    gap: 14px;
+  }
+
+  .sidebar .title {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .logout-btn {
+    width: 100%;
+  }
+
+  .users-table {
+    font-size: 0.82rem;
+  }
+
+  .socket-users td {
+    padding: 12px 16px;
+  }
+
+  .actions-cell {
+    width: auto;
+    padding-right: 8px;
+  }
+
+  .btn-inline {
+    width: auto;
+    padding: 6px 14px;
+  }
+
+  .messages {
+    max-height: min(50vh, 360px);
+  }
+
+  .message-bubble {
+    max-width: 82%;
+    font-size: 0.9rem;
   }
 }

@@ -26,6 +26,69 @@ let connectedUsers = [];
 let conversationList = [];
 const unreadUserIDs = new Set();
 
+const parseDateValue = (value) => {
+  if (!value) {
+    return null;
+  }
+  const direct = new Date(value);
+  if (!Number.isNaN(direct.getTime())) {
+    return direct;
+  }
+
+  const legacyMatch = value.match(
+    /^(\d{4})\.\s*(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{1,2})시\s*(\d{1,2})분/
+  );
+  if (legacyMatch) {
+    const [, year, month, day, hour, minute] = legacyMatch;
+    const normalized = new Date(
+      Number(year),
+      Number(month) - 1,
+      Number(day),
+      Number(hour),
+      Number(minute)
+    );
+    if (!Number.isNaN(normalized.getTime())) {
+      return normalized;
+    }
+  }
+  return null;
+};
+
+const formatDisplayTime = (value) => {
+  const date = parseDateValue(value);
+  if (!date) {
+    return value || "";
+  }
+
+  const parts = new Intl.DateTimeFormat("ko-KR", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).formatToParts(date);
+
+  let dayPeriod = "";
+  let hour = "";
+  let minute = "";
+  parts.forEach((part) => {
+    if (part.type === "dayPeriod") {
+      dayPeriod = part.value;
+    }
+    if (part.type === "hour") {
+      hour = part.value;
+    }
+    if (part.type === "minute") {
+      minute = part.value;
+    }
+  });
+
+  if (!hour && !minute) {
+    return value || "";
+  }
+
+  const trimmedMinute = minute.padStart(2, "0");
+  return `${dayPeriod ? `${dayPeriod} ` : ""}${hour}시 ${trimmedMinute}분`.trim();
+};
+
 const isSelf = (userID) =>
   typeof userID === "string" &&
   !!sessionUserID &&
@@ -500,10 +563,26 @@ const setActiveUser = (element, username, userID) => {
 };
 
 const appendMessage = ({ message, time, position }) => {
-  const div = document.createElement("div");
-  div.classList.add("message", position);
-  div.innerHTML = `<span class="msg-test">${message}</span><span class="msg-time">${time}</span>`;
-  messages.appendChild(div);
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("message-row", position);
+
+  const bubble = document.createElement("div");
+  bubble.classList.add("message-bubble", position);
+  bubble.textContent = message;
+
+  const timeStamp = document.createElement("span");
+  timeStamp.classList.add("message-time");
+  timeStamp.textContent = formatDisplayTime(time);
+
+  if (position === "right") {
+    wrapper.appendChild(timeStamp);
+    wrapper.appendChild(bubble);
+  } else {
+    wrapper.appendChild(bubble);
+    wrapper.appendChild(timeStamp);
+  }
+
+  messages.appendChild(wrapper);
   messages.scrollTop = messages.scrollHeight;
 };
 
@@ -576,7 +655,7 @@ if (messageForm) {
     }
 
     const activeUsername = (title.textContent || "").trim();
-    const time = new Date().toLocaleString("ko-KR", { hour12: false });
+    const time = new Date().toISOString();
     const payload = {
       to,
       toUsername: activeUsername,
@@ -593,7 +672,7 @@ if (messageForm) {
     upsertConversation({
       userID: to,
       username: activeUsername,
-      updatedAt: new Date().toISOString(),
+      updatedAt: time,
       hasHistory: true,
     });
     renderUserList();
@@ -620,7 +699,7 @@ socket.on("message-to-client", ({ from, fromUsername, message, time }) => {
   upsertConversation({
     userID: from,
     username: fromUsername,
-    updatedAt: new Date().toISOString(),
+    updatedAt: time || new Date().toISOString(),
     hasHistory: true,
   });
   renderUserList();
@@ -639,8 +718,11 @@ socket.on("fetch-messages", (history = []) => {
 
   const partnerID = title.getAttribute("userID");
   if (partnerID && history.length > 0) {
+    const last = history[history.length - 1];
+    const parsedTime = parseDateValue(last.time);
     upsertConversation({
       userID: partnerID,
+      updatedAt: parsedTime ? parsedTime.toISOString() : undefined,
       hasHistory: true,
     });
     renderUserList();

@@ -135,9 +135,7 @@ io.on("connection", async (socket) => {
 
       const timestamp =
         payload.time ||
-        new Date().toLocaleString("ko-KR", {
-          hour12: false,
-        });
+        new Date().toISOString();
 
       const receiver = users.find((user) => user.userID === receiverID);
 

@@ -87,6 +87,8 @@ pnpm --filter @express-chat/private-chat dev
    ![Private Chat Conversation](public/img/pc5.png)
 5. **오프라인 상대에게 메시지 남기기** – `pc6.png`  
    ![Private Chat Offline Messaging](public/img/pc6.png)
+6. **반응형 UI (데스크톱/모바일 비교)** – `pc7.png`  
+   ![Private Chat Responsive](public/img/pc7.png)
 
 ## 🖼 화면 흐름
 
